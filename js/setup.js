@@ -35,6 +35,7 @@ var WIZARD_EYES_COLORS = [
   'yellow',
   'green'
 ];
+var NUMBER_OF_WIZARD = 4;
 
 var userDialog = document.querySelector('.setup'); // Основной блок
 var similarListElement = userDialog.querySelector('.setup-similar-list'); // Список персонажей
@@ -49,19 +50,20 @@ function getRandomElement(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-function getRandomWizard(firstName, lastName, coatColor, eyesColor) {
-  var wizardsList = [];
+function getRandomWizards(firstName, lastName, coatColor, eyesColor) {
+  var arr = [];
 
-  for (i = 0; i < 4; i++) {
-    wizardsList[i] = {};
-    wizardsList[i].name = getRandomElement(firstName) + ' ' + getRandomElement(lastName);
-    wizardsList[i].coatColor = getRandomElement(coatColor);
-    wizardsList[i].eyesColor = getRandomElement(eyesColor);
+  for (i = 0; i < NUMBER_OF_WIZARD; i++) {
+    arr.push({
+      name: getRandomElement(firstName) + ' ' + getRandomElement(lastName),
+      coatColor: getRandomElement(coatColor),
+      eyesColor: getRandomElement(eyesColor)
+    });
   }
 
-  return wizardsList;
+  return arr;
 }
-var wizards = getRandomWizard(WIZARD_FIRST_NAMES, WIZARD_LAST_NAMES, WIZARD_COAT_COLORS, WIZARD_EYES_COLORS);
+var wizards = getRandomWizards(WIZARD_FIRST_NAMES, WIZARD_LAST_NAMES, WIZARD_COAT_COLORS, WIZARD_EYES_COLORS);
 
 function renderWizard(wizard) {
   var wizardElement = similarWizardTemplate.cloneNode(true); // Копирует шаблон
