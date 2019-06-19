@@ -36,15 +36,6 @@ var WIZARD_EYES_COLORS = [
   'green'
 ];
 var NUMBER_OF_WIZARD = 4;
-
-var ESC_KEYCODE = 27;
-var ENTER_KEYCODE = 13;
-
-var setupElement = document.querySelector('.setup');
-var setupOpenElement = document.querySelector('.setup-open');
-var setupCloseElement = setupElement.querySelector('.setup-close');
-var setupUserNameElement = setupElement.querySelector('.setup-user-name');
-
 var WIZARD_FIREBALL_COLORS = [
   '#ee4830',
   '#30a8ee',
@@ -53,7 +44,18 @@ var WIZARD_FIREBALL_COLORS = [
   '#e6e848'
 ];
 
-var setupMainWizardElement = setupElement.querySelector('.setup-wizard');
+var KeyCode = {
+  ESC: 27,
+  ENTER: 13
+};
+
+var setupElement = document.querySelector('.setup');
+var setupOpenElement = document.querySelector('.setup-open');
+var setupCloseElement = setupElement.querySelector('.setup-close');
+var setupUserNameElement = setupElement.querySelector('.setup-user-name');
+
+var setupMainWizardCoatElement = setupElement.querySelector('.wizard-coat');
+var setupMainWizardEyesElement = setupElement.querySelector('.wizard-eyes');
 var setupFireballElement = setupElement.querySelector('.setup-fireball-wrap');
 
 var inputHiddenCoatElement = setupElement.querySelector('input[name="coat-color"]');
@@ -67,7 +69,7 @@ var similarWizardTemplate = document.querySelector('#similar-wizard-template')
     .querySelector('.setup-similar-item'); // Шаблон
 var fragment = document.createDocumentFragment(); // Создаем пустой DOM элемент
 
-userDialog.classList.remove('hidden'); // Показываем основной блок
+// ------ Генерация и добавление рандомных персонажей ------
 
 function getRandomElement(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
@@ -105,46 +107,23 @@ similarListElement.appendChild(fragment);
 
 userDialog.querySelector('.setup-similar').classList.remove('hidden');
 
-// Пытался сделать, что бы окно не закрывалось когда фокус находится на форме ввода имени с помощью focus и blur, но смог только через activeElement
+// ------ Попап и логика внутри ------
+
 function onPopupEscPress(evt) {
-  if (evt.keyCode === ESC_KEYCODE) {
+  if (evt.keyCode === KeyCode.ESC) {
     if (document.activeElement !== setupUserNameElement) {
       closePopup();
     }
   }
 }
 
-function openPopup() {
-  setupElement.classList.remove('hidden');
-  document.addEventListener('keydown', onPopupEscPress);
-}
-
-function closePopup() {
-  setupElement.classList.add('hidden');
-  document.removeEventListener('keydown', onPopupEscPress);
-}
-
-setupOpenElement.addEventListener('click', function () {
-  openPopup();
-});
-
-setupOpenElement.addEventListener('keydown', function (evt) {
-  if (evt.keyCode === ENTER_KEYCODE) {
-    openPopup();
-  }
-});
-
-setupCloseElement.addEventListener('click', function () {
-  closePopup();
-});
-
-setupCloseElement.addEventListener('keydown', function (evt) {
-  if (evt.keyCode === ENTER_KEYCODE) {
+function onClosePopupEnterPress(evt) {
+  if (evt.keyCode === KeyCode.ENTER) {
     closePopup();
   }
-});
+}
 
-setupUserNameElement.addEventListener('invalid', function () {
+function onUserNameEnter() {
   if (setupUserNameElement.validity.tooShort) {
     setupUserNameElement.setCustomValidity('Имя должно состоять минимум из 2-х символов');
   } else if (setupUserNameElement.validity.tooLong) {
@@ -152,23 +131,54 @@ setupUserNameElement.addEventListener('invalid', function () {
   } else if (setupUserNameElement.validity.valueMissing) {
     setupUserNameElement.setCustomValidity('Обязательное поле');
   } else {
-    setupUserNameElement.setCustomValidity(''); // Вот это зачем надо, не совсем ясно?
+    setupUserNameElement.setCustomValidity('');
   }
-});
+}
 
-// Можно было бы объединить в одну функцию два слушателя ниже, повесив один слушатель на весь блок формы, но стоит ли?
-setupMainWizardElement.addEventListener('click', function (evt) {
-  if (evt.target.classList.contains('wizard-coat')) {
-    evt.target.style.fill = getRandomElement(WIZARD_COAT_COLORS);
-    inputHiddenCoatElement.value = getRandomElement(WIZARD_COAT_COLORS);
-  } else if (evt.target.classList.contains('wizard-eyes')) {
-    evt.target.style.fill = getRandomElement(WIZARD_EYES_COLORS);
-    inputHiddenEyesElement.value = getRandomElement(WIZARD_EYES_COLORS);
-  }
-});
+function onMainWizardCoatClick() {
+  setupMainWizardCoatElement.style.fill = getRandomElement(WIZARD_COAT_COLORS);
+  inputHiddenCoatElement.value = getRandomElement(WIZARD_COAT_COLORS);
+}
 
-setupFireballElement.addEventListener('click', function () {
+function onMainWizardEyesClick() {
+  setupMainWizardEyesElement.style.fill = getRandomElement(WIZARD_COAT_COLORS);
+  inputHiddenEyesElement.value = getRandomElement(WIZARD_COAT_COLORS);
+}
+
+function onFireballClick() {
   setupFireballElement.style.backgroundColor = getRandomElement(WIZARD_FIREBALL_COLORS);
   inputHiddenFireballElement.value = getRandomElement(WIZARD_FIREBALL_COLORS);
+}
+
+function openPopup() {
+  setupElement.classList.remove('hidden');
+  document.addEventListener('keydown', onPopupEscPress);
+  setupCloseElement.addEventListener('keydown', onClosePopupEnterPress);
+  setupUserNameElement.addEventListener('invalid', onUserNameEnter);
+  setupMainWizardCoatElement.addEventListener('click', onMainWizardCoatClick);
+  setupMainWizardEyesElement.addEventListener('click', onMainWizardEyesClick);
+  setupFireballElement.addEventListener('click', onFireballClick);
+  setupCloseElement.addEventListener('click', closePopup);
+}
+
+function closePopup() {
+  setupElement.classList.add('hidden');
+  document.removeEventListener('keydown', onPopupEscPress);
+  setupCloseElement.removeEventListener('keydown', onClosePopupEnterPress);
+  setupUserNameElement.removeEventListener('invalid', onUserNameEnter);
+  setupMainWizardCoatElement.removeEventListener('click', onMainWizardCoatClick);
+  setupMainWizardEyesElement.removeEventListener('click', onMainWizardEyesClick);
+  setupFireballElement.removeEventListener('click', onFireballClick);
+  setupCloseElement.removeEventListener('click', closePopup);
+}
+
+setupOpenElement.addEventListener('click', function () {
+  openPopup();
+});
+
+setupOpenElement.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === KeyCode.ENTER) {
+    openPopup();
+  }
 });
 
