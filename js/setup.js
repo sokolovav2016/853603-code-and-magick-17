@@ -43,24 +43,23 @@ var WIZARD_FIREBALL_COLORS = [
   '#e848d5',
   '#e6e848'
 ];
-
 var KeyCode = {
   ESC: 27,
   ENTER: 13
 };
 
-var setupElement = document.querySelector('.setup');
+var setupDialogElement = document.querySelector('.setup');
 var setupOpenElement = document.querySelector('.setup-open');
-var setupCloseElement = setupElement.querySelector('.setup-close');
-var setupUserNameElement = setupElement.querySelector('.setup-user-name');
+var setupCloseElement = setupDialogElement.querySelector('.setup-close');
+var setupUserNameElement = setupDialogElement.querySelector('.setup-user-name');
 
-var setupMainWizardCoatElement = setupElement.querySelector('.wizard-coat');
-var setupMainWizardEyesElement = setupElement.querySelector('.wizard-eyes');
-var setupFireballElement = setupElement.querySelector('.setup-fireball-wrap');
+var setupMainWizardCoatElement = setupDialogElement.querySelector('.wizard-coat');
+var setupMainWizardEyesElement = setupDialogElement.querySelector('.wizard-eyes');
+var setupFireballElement = setupDialogElement.querySelector('.setup-fireball-wrap');
 
-var inputHiddenCoatElement = setupElement.querySelector('input[name="coat-color"]');
-var inputHiddenEyesElement = setupElement.querySelector('input[name="eyes-color"]');
-var inputHiddenFireballElement = setupElement.querySelector('input[name="fireball-color"]');
+var inputHiddenCoatElement = setupDialogElement.querySelector('input[name="coat-color"]');
+var inputHiddenEyesElement = setupDialogElement.querySelector('input[name="eyes-color"]');
+var inputHiddenFireballElement = setupDialogElement.querySelector('input[name="fireball-color"]');
 
 var userDialog = document.querySelector('.setup'); // Основной блок
 var similarListElement = userDialog.querySelector('.setup-similar-list'); // Список персонажей
@@ -68,6 +67,8 @@ var similarWizardTemplate = document.querySelector('#similar-wizard-template')
     .content
     .querySelector('.setup-similar-item'); // Шаблон
 var fragment = document.createDocumentFragment(); // Создаем пустой DOM элемент
+
+var dialogHandler = setupDialogElement.querySelector('.upload');
 
 // ------ Генерация и добавление рандомных персонажей ------
 
@@ -150,25 +151,83 @@ function onFireballClick() {
   inputHiddenFireballElement.value = getRandomElement(WIZARD_FIREBALL_COLORS);
 }
 
+function onDialogHandlerDrag(evt) {
+  evt.preventDefault(); // Работает без него
+
+  var startCoords = {
+    x: evt.clientX,
+    y: evt.clientY
+  };
+
+  var dragged = false;
+
+  function onMouseMove(moveEvt) {
+    moveEvt.preventDefault(); // Работает без него
+    dragged = true;
+
+    var shift = {
+      x: startCoords.x - moveEvt.clientX,
+      y: startCoords.y - moveEvt.clientY
+    };
+
+    startCoords = {
+      x: moveEvt.clientX,
+      y: moveEvt.clientY
+    };
+
+    setupDialogElement.style.top = (setupDialogElement.offsetTop - shift.y) + 'px';
+    setupDialogElement.style.left = (setupDialogElement.offsetLeft - shift.x) + 'px';
+
+  }
+
+  function onMouseUp(upEvt) {
+    upEvt.preventDefault(); // Работает без него
+
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+
+    function onClickPreventDefault(clickEvt) {
+      clickEvt.preventDefault();
+      dialogHandler.removeEventListener('click', onClickPreventDefault);
+    }
+
+    if (dragged) {
+      dialogHandler.addEventListener('click', onClickPreventDefault);
+    }
+
+  }
+
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
+}
+
+function resetPosition(element) {
+  element.style.top = '';
+  element.style.left = '';
+}
+
 function openPopup() {
-  setupElement.classList.remove('hidden');
+  setupDialogElement.classList.remove('hidden');
   document.addEventListener('keydown', onPopupEscPress);
   setupCloseElement.addEventListener('keydown', onClosePopupEnterPress);
   setupUserNameElement.addEventListener('invalid', onUserNameEnter);
   setupMainWizardCoatElement.addEventListener('click', onMainWizardCoatClick);
   setupMainWizardEyesElement.addEventListener('click', onMainWizardEyesClick);
   setupFireballElement.addEventListener('click', onFireballClick);
+  dialogHandler.addEventListener('mousedown', onDialogHandlerDrag);
   setupCloseElement.addEventListener('click', closePopup);
 }
 
 function closePopup() {
-  setupElement.classList.add('hidden');
+  setupDialogElement.classList.add('hidden');
   document.removeEventListener('keydown', onPopupEscPress);
   setupCloseElement.removeEventListener('keydown', onClosePopupEnterPress);
   setupUserNameElement.removeEventListener('invalid', onUserNameEnter);
   setupMainWizardCoatElement.removeEventListener('click', onMainWizardCoatClick);
   setupMainWizardEyesElement.removeEventListener('click', onMainWizardEyesClick);
   setupFireballElement.removeEventListener('click', onFireballClick);
+  dialogHandler.removeEventListener('mousedown', onDialogHandlerDrag);
+  resetPosition(setupDialogElement);
   setupCloseElement.removeEventListener('click', closePopup);
 }
 
@@ -181,4 +240,3 @@ setupOpenElement.addEventListener('keydown', function (evt) {
     openPopup();
   }
 });
-
