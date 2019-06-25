@@ -6,7 +6,7 @@
   var dialogAvatarElement = dialogElement.querySelector('.upload');
   var artifactsBagElement = document.querySelector('.setup-artifacts');
 
-  function elementDrag(evt, element) {
+  function elementDrag(evt, dragElement, dragByElement) {
     evt.preventDefault();
 
     var startCoords = {
@@ -30,8 +30,8 @@
         y: moveEvt.clientY
       };
 
-      element.style.top = (element.offsetTop - shift.y) + 'px';
-      element.style.left = (element.offsetLeft - shift.x) + 'px';
+      dragElement.style.top = (dragElement.offsetTop - shift.y) + 'px';
+      dragElement.style.left = (dragElement.offsetLeft - shift.x) + 'px';
 
     }
 
@@ -43,11 +43,11 @@
 
       function onClickPreventDefault(clickEvt) {
         clickEvt.preventDefault();
-        dialogAvatarElement.removeEventListener('click', onClickPreventDefault);
+        dragByElement.removeEventListener('click', onClickPreventDefault);
       }
 
       if (dragged) {
-        dialogAvatarElement.addEventListener('click', onClickPreventDefault);
+        dragByElement.addEventListener('click', onClickPreventDefault);
       }
 
     }
@@ -84,7 +84,7 @@
 
   window.drag = {
     onDialogAvatarElementDrag: function (evt) {
-      elementDrag(evt, dialogElement);
+      elementDrag(evt, dialogElement, dialogAvatarElement);
     },
 
     resetPosition: function (element) {
