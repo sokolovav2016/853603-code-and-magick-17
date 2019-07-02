@@ -41,17 +41,20 @@
     onElementColorClick(fireballElement, inputFireballElement, WIZARD_FIREBALL_COLORS);
   }
 
-  window.colorize = {
-    addColorize: function () {
-      mainWizardCoatElement.addEventListener('click', onWizardCoatClick);
-      mainWizardEyesElement.addEventListener('click', onWizardEyesClick);
-      fireballElement.addEventListener('click', onFireballClick);
-    },
+  function addColorize() {
+    mainWizardCoatElement.addEventListener('click', onWizardCoatClick);
+    mainWizardEyesElement.addEventListener('click', onWizardEyesClick);
+    fireballElement.addEventListener('click', onFireballClick);
+  }
 
-    removeColorize: function () {
-      mainWizardCoatElement.removeEventListener('click', onWizardCoatClick);
-      mainWizardEyesElement.removeEventListener('click', onWizardEyesClick);
-      fireballElement.removeEventListener('click', onFireballClick);
-    }
+  function removeColorize() {
+    mainWizardCoatElement.removeEventListener('click', onWizardCoatClick);
+    mainWizardEyesElement.removeEventListener('click', onWizardEyesClick);
+    fireballElement.removeEventListener('click', onFireballClick);
+  }
+
+  window.colorize = {
+    addListeners: addColorize,
+    removeListeners: removeColorize
   };
 })();
