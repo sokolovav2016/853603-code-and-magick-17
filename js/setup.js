@@ -16,15 +16,15 @@
   }
 
   function onInputUserNameFocus() {
-    function onInputUserNameBlur() {
-      document.addEventListener('keydown', onPopupEscPress);
-      inputUserNameElement.addEventListener('focus', onInputUserNameFocus);
-      inputUserNameElement.removeEventListener('blur', onInputUserNameBlur);
-    }
-
     document.removeEventListener('keydown', onPopupEscPress);
     inputUserNameElement.removeEventListener('focus', onInputUserNameFocus);
     inputUserNameElement.addEventListener('blur', onInputUserNameBlur);
+  }
+
+  function onInputUserNameBlur() {
+    document.addEventListener('keydown', onPopupEscPress);
+    inputUserNameElement.addEventListener('focus', onInputUserNameFocus);
+    inputUserNameElement.removeEventListener('blur', onInputUserNameBlur);
   }
 
   function onUserNameInput() {
@@ -42,7 +42,7 @@
   function openPopup() {
     dialogElement.classList.remove('hidden');
 
-    window.backend.load(window.wizards.render, window.backend.error);
+    window.backend.load(window.wizards.render, window.error.init);
     form.addEventListener('submit', window.backend.save);
 
     window.colorize.addListeners();
@@ -61,7 +61,7 @@
     dialogElement.classList.add('hidden');
 
     form.removeEventListener('submit', window.backend.save);
-    window.backend.errorClose();
+    window.error.destroy();
 
     window.colorize.removeListeners();
 

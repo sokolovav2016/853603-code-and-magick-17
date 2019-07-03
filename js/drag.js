@@ -78,13 +78,13 @@
   }
 
   function onArtifactsElementDragenter(evt) { // эл над зоной
-    evt.target.style.backgroundColor = 'yellow';
     evt.preventDefault();
+    evt.target.style.backgroundColor = 'yellow';
   }
 
   function onArtifactsElementDragleave(evt) { // уход эл с зоны
-    evt.target.style.backgroundColor = '';
     evt.preventDefault();
+    evt.target.style.backgroundColor = '';
   }
 
   function onDialogAvatarElementDrag(evt) {
