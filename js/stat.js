@@ -33,18 +33,6 @@
     ctx.fillText(text, x, y);
   }
 
-  function getMaxElement(arr) {
-    var maxElement = arr[0];
-
-    for (var i = 0; i < arr.length; i++) {
-      if (arr[i] > maxElement) {
-        maxElement = arr[i];
-      }
-    }
-
-    return maxElement;
-  }
-
   window.renderStatistics = function (ctx, names, times) {
     renderCloud(ctx, CLOUD_X + GAP, CLOUD_Y + GAP, 'rgba(0, 0, 0, 0.7)');
     renderCloud(ctx, CLOUD_X, CLOUD_Y, '#fff');
@@ -52,7 +40,7 @@
     renderText(ctx, CLOUD_X + GAP * 2, CLOUD_Y + GAP * 3, 'Ура вы победили!');
     renderText(ctx, CLOUD_X + GAP * 2, CLOUD_Y + GAP * 3 + FONT_GAP, 'Список результатов:');
 
-    var maxTime = getMaxElement(times);
+    var maxTime = window.util.getMaxElement(times);
 
     for (var i = 0; i < names.length; i++) {
       var coordinateX = CLOUD_X + DISTANCE_BETWEEN * i + COLUMN_WIDTH * (i + 1);
