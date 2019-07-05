@@ -6,7 +6,7 @@
   var artifactsBagElement = document.querySelector('.setup-artifacts');
   var artifactsShopElement = document.querySelector('.setup-artifacts-shop');
 
-  // --------------- ПЕРЕМЕЩЕНИЕ ПОПАПА ---------------
+  // --------------- ПЕРЕМЕЩЕНИЕ ФОРМЫ ---------------
 
   function elementDrag(evt, dragElement, dragByElement) {
     evt.preventDefault();
@@ -58,6 +58,27 @@
     document.addEventListener('mouseup', onMouseUp);
   }
 
+  function onDialogAvatarElementDrag(evt) {
+    var dialogElement = document.querySelector('.setup');
+
+    elementDrag(evt, dialogElement, dialogAvatarElement);
+  }
+
+  function addPopupDrag() {
+    dialogAvatarElement.addEventListener('mousedown', onDialogAvatarElementDrag);
+  }
+
+  function removePopupDrag() {
+    dialogAvatarElement.removeEventListener('mousedown', onDialogAvatarElementDrag);
+  }
+
+  // --------------- СБРОС ПЕРЕМЕЩЕНИЯ ФОРМЫ ---------------
+
+  function resetPosition(element) {
+    element.style.top = '';
+    element.style.left = '';
+  }
+
   // --------------- ПЕРЕМЕЩЕНИЕ ЗВЕЗДЫ ---------------
 
 
@@ -74,7 +95,7 @@
     artifactsBagElement.removeEventListener('drop', onArtifactsElementDrop);
     artifactsBagElement.removeEventListener('dragenter', onArtifactsElementDragenter);
     artifactsBagElement.removeEventListener('dragleave', onArtifactsElementDragleave);
-    artifactsBagElement.addEventListener('dragstart', window.drag.onElementDragstart);
+    artifactsBagElement.addEventListener('dragstart', onElementDragstart);
   }
 
   function onArtifactsElementDragenter(evt) { // эл над зоной
@@ -85,12 +106,6 @@
   function onArtifactsElementDragleave(evt) { // уход эл с зоны
     evt.preventDefault();
     evt.target.style.backgroundColor = '';
-  }
-
-  function onDialogAvatarElementDrag(evt) {
-    var dialogElement = document.querySelector('.setup');
-
-    elementDrag(evt, dialogElement, dialogAvatarElement);
   }
 
   function onElementDragstart(evt) {
@@ -105,31 +120,20 @@
     artifactsBagElement.addEventListener('dragleave', onArtifactsElementDragleave);
   }
 
-  function resetPosition(element) {
-    element.style.top = '';
-    element.style.left = '';
-  }
-
-  function addPopupDrag() {
-    dialogAvatarElement.addEventListener('mousedown', onDialogAvatarElementDrag);
-  }
-
   function addStarDrag() {
     artifactsShopElement.addEventListener('dragstart', onElementDragstart);
-  }
-
-  function removePopupDrag() {
-    dialogAvatarElement.removeEventListener('mousedown', onDialogAvatarElementDrag);
   }
 
   function removeStarDrag() {
     artifactsShopElement.removeEventListener('dragstart', onElementDragstart);
   }
 
+  // --------------- ИНТЕРФЕЙС ---------------
+
   window.drag = {
     addPopupListeners: addPopupDrag,
-    addShopListeners: addStarDrag,
     removePopupListeners: removePopupDrag,
+    addShopListeners: addStarDrag,
     removeShopListeners: removeStarDrag,
     reset: resetPosition
   };

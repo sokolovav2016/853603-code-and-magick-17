@@ -42,7 +42,7 @@
   function openPopup() {
     dialogElement.classList.remove('hidden');
 
-    window.backend.load(window.wizards.render, window.error.init);
+    window.backend.load(window.similar.init, window.error.init);
     form.addEventListener('submit', window.backend.save);
 
     window.colorize.addListeners();
