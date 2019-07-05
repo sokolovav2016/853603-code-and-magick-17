@@ -24,7 +24,7 @@
     wizardsListElement.innerHTML = '';
 
     for (var i = 0; i < NUMBER_OF_WIZARD; i++) {
-      fragment.appendChild(renderWizard(window.util.getRandomElement(wizards)));
+      fragment.appendChild(renderWizard(wizards[i]));
     }
     wizardsListElement.appendChild(fragment);
     wizardsElement.classList.remove('hidden');

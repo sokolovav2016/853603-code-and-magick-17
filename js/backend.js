@@ -1,8 +1,10 @@
 'use strict';
 
 (function () {
-  var URL_LOAD = 'https://js.dump.academy/code-and-magick/data';
-  var URL_SAVE = 'https://js.dump.academy/code-and-magick';
+  var Url = {
+    LOAD: 'https://js.dump.academy/code-and-magick/data',
+    SAVE: 'https://js.dump.academy/code-and-magick'
+  };
   var form = document.querySelector('.setup-wizard-form');
 
   // --------------- LOAD ---------------
@@ -23,7 +25,13 @@
       onError('Произошла ошибка соединения');
     });
 
-    xhr.open('GET', URL_LOAD);
+    xhr.addEventListener('timeout', function () {
+      onError('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
+    });
+
+    xhr.timeout = 1000;
+
+    xhr.open('GET', Url.LOAD);
     xhr.send();
   }
 
@@ -45,7 +53,7 @@
       onError('Произошла ошибка соединения');
     });
 
-    xhr.open('POST', URL_SAVE);
+    xhr.open('POST', Url.SAVE);
     xhr.send(data);
   }
 

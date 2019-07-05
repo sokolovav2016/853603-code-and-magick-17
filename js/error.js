@@ -8,7 +8,7 @@
 
     var node = document.createElement('div');
     node.className = 'error';
-    node.style = 'width: 500px; height: 200px; margin-right: -250px; margin-top: -100px; display: flex; justify-content: center; align-items: center; text-content: center; z-index: 100; background-color: rgba(255, 0, 0, 0.7); border-radius: 20px;';
+    node.style = 'width: 500px; margin-right: -250px; margin-top: -100px; padding: 25px; display: flex; justify-content: center; align-items: center; text-content: center; z-index: 100; background-color: rgba(255, 0, 0, 0.7); border-radius: 20px;';
     node.style.position = 'absolute';
     node.style.top = '50%';
     node.style.right = '50%';
